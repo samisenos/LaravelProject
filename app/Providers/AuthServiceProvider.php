@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Permission;
 use App\Models\User;
 use App\Policies\UserPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -31,5 +32,10 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('auth-user',function(User $user , User $currentuser = null){
             return $user->id == $currentuser->id ? true : false ;
         });
+        foreach (Permission::all() as $permission){
+            Gate::define($permission->name,function (User $user) use ($permission) {
+                return $user->hasPermission($permission);
+            });
+        }
     }
 }

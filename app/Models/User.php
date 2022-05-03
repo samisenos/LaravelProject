@@ -20,7 +20,19 @@ class User extends Authenticatable
     protected $fillable = [
         'name','email','password','email_verified_at','is_admin','is_staff','phone','twofactor_type',
     ];
-
+    public function permissions(){
+        return $this->belongsToMany(Permission::class);
+    }
+    public function roles(){
+        return $this->belongsToMany(Role::class);
+    }
+    public function hasRole($roles){
+        return !! $roles->intersect($this->roles)->all();
+    }
+    public function hasPermission($permission){
+        /*return !! auth()->user()->permissions()->find($permission);*/
+        dd($this->permissions->contains('name',$permission->name) || $this->hasRole($permission->roles));
+    }
     /**
      * The attributes that should be hidden for serialization.
      *

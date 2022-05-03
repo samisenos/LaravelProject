@@ -9,7 +9,7 @@
                 <div class="card-header">
                     <h3 class="card-title">لیست کاربران</h3>
 
-                    <div class="card-tools">
+                    <div class="card-tools d-flex">
                         <form action="#">
                         <div class="input-group input-group-sm" style="width: 150px;">
                             <input type="text" name="search" class="form-control float-right" placeholder="جستجو">
@@ -37,7 +37,7 @@
                         </tr>
                         @foreach($users as $key=>$user)
                         <tr>
-                            <td>{{$key}}</td>
+                            <td>{{$key+1}}</td>
                             <td>{{$user->name}}</td>
                             <td>{{$user->created_at}}</td>
                             <td>
@@ -48,25 +48,22 @@
                                 @endif
                             </td>
                             <td>{{$user->email}}</td>
-                            <td>
+                            @can('auth-user',$user)
+                            <td class="d-flex">
                                 <a class="btn btn-sm btn-primary" href="{{route('admin.user.edit',['user'=>$user->id])}}">ویرایش</a>
                                 <form action="{{route('admin.user.destroy',['user'=>$user->id])}}" method="post">
                                 @csrf
                                 @method('delete')
-                                <button class="btn btn-sm btn-danger">حذف</button>
+                                <button class="btn btn-sm btn-danger mr-2">حذف</button>
                                 </form>
                             </td>
+                            @endcan
                         </tr>
                         @endforeach
                     </table>
-                    <div>
-                        {{$users->links()}}
+                    <div class="card-footer ">
                         <ul class="pagination pagination-sm m-0 float-left">
-                            <li class="page-item"><a class="page-link" href="#">&laquo;</a></li>
-                            <li class="page-item"><a class="page-link" href="#">1</a></li>
-                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                            <li class="page-item"><a class="page-link" href="#">&raquo;</a></li>
+                            {{$users->render()}}
                         </ul>
                     </div>
                 </div>

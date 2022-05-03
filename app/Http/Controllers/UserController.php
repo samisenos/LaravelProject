@@ -26,7 +26,7 @@ class UserController extends Controller
         if(\request('admin')){
             $users->where('is_admin',1)->orWhere('is_staff',1);
         }
-        $users = $users->paginate(10);
+        $users = $users->paginate(2);
         return view('admin.user.all',compact('users'));
     }
 
@@ -84,8 +84,12 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        return view('admin.user.edit',compact('user'));
-
+        if (\Illuminate\Support\Facades\Gate::allows('update',$user)) {
+            return view('admin.user.edit',compact('user'));
+        }
+        else{
+            abort(403);
+        }
     }
 
     /**
